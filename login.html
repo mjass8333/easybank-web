@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>EASY Banking - Sign In</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>:root{--primary-navy:#1a365d;--text-main:#1e293b;--text-muted:#64748b;--bg-white:#ffffff}body{margin:0;padding:0;font-family:'Montserrat',sans-serif;background-color:var(--bg-white);height:100vh;width:100vw;display:flex;justify-content:center;align-items:center;overflow:hidden}.easy-modal{background:var(--bg-white);padding:30px 25px;width:95%;max-width:400px;color:var(--text-main);text-align:center;position:relative;box-sizing:border-box}.close-btn{position:absolute;right:15px;top:-10px;cursor:pointer;font-size:32px;color:#cbd5e1;font-weight:300;z-index:10}.modal-logo-img{width:55px;height:55px;border-radius:50%;border:1px solid #f1f5f9;margin-bottom:15px;padding:6px;background:#000;display:inline-block}.modal-title{font-size:22px;font-weight:600;margin:0 0 8px 0;color:var(--text-main);letter-spacing:-0.5px}.modal-tagline{font-size:13px;color:var(--text-muted);margin-bottom:25px;line-height:1.4;max-width:260px;margin-left:auto;margin-right:auto}.modal-input-group{text-align:left;margin-bottom:15px}.label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.label-row label,.modal-input-group label{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}.forgot-password{font-size:12px;color:var(--primary-navy);text-decoration:none;font-weight:700}.modal-input-wrapper{background:#f8fafc;border-radius:12px;display:flex;align-items:center;overflow:hidden;border:1.5px solid #edf2f7;height:50px}.input-icon{padding-left:15px;color:#94a3b8;font-size:16px}input{background:transparent;border:none;padding:0 12px;color:var(--text-main);width:100%;outline:none;font-size:15px;font-family:'Montserrat',sans-serif;height:100%}input::placeholder{color:#cbd5e1}.stay-signed-in{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-muted);margin-bottom:20px;text-align:left;font-weight:500}.modal-signin-btn{width:100%;padding:15px;background:var(--primary-navy);border:none;border-radius:12px;color:white;font-weight:600;cursor:pointer;font-size:16px;display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:12px}.modal-create-btn{width:100%;padding:15px;background:transparent;border:1.5px solid #edf2f7;border-radius:12px;color:var(--text-main);font-weight:700;cursor:pointer;font-size:13px;display:flex;justify-content:center;align-items:center;gap:10px}#errorMessage{color:#ef4444;font-size:13px;display:none;margin-bottom:15px;font-weight:500}
+input,select,textarea{font-size:16px!important;touch-action:manipulation}body{touch-action:manipulation;-webkit-text-size-adjust:100%}
+</style>
+
+</head>
+<body>
+<div class="easy-modal">
+<span class="close-btn" onclick="window.location.href='index.html'">&times;</span>
+<img src="eb.png" alt="EASY BANK" class="modal-logo-img">
+<h2 class="modal-title">Sign In to EASY Banking</h2>
+<p class="modal-tagline">Access the EASY Banking panel using your username and password.</p>
+<div id="errorMessage"><i class="fas fa-exclamation-circle"></i> Invalid username or password.</div>
+<div class="modal-input-group">
+<label>Username</label>
+<div class="modal-input-wrapper" style="margin-top:8px;">
+<i class="fas fa-envelope input-icon"></i>
+<input type="text" id="loginUser" placeholder="Enter Username" required>
+</div>
+</div>
+<div class="modal-input-group">
+<div class="label-row">
+<label>Password</label>
+<a href="#" class="forgot-password" onclick="alert('Contact support to reset.')">Forgot Password?</a>
+</div>
+<div class="modal-input-wrapper">
+<i class="fas fa-lock input-icon"></i>
+<input type="password" id="loginPass" placeholder="........." required>
+<i class="fas fa-eye" id="togglePass" style="padding-right:15px;color:#999;cursor:pointer"></i>
+</div>
+</div>
+<div class="stay-signed-in"><input type="checkbox" style="width:auto"> Stay signed in for 30 days</div>
+<button type="button" class="modal-signin-btn" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+<button type="button" class="modal-create-btn" onclick="window.location.href='index.html#onboarding-section'"><i class="fas fa-user-plus"></i> Not enrolled? Create Account</button>
+</div>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<script>const firebaseConfig={apiKey:"AIzaSyAXC1h4v7M5GDbHBeA0gXU3asjADSknpHc",authDomain:"easybankdb.firebaseapp.com",databaseURL:"https://easybankdb-default-rtdb.firebaseio.com",projectId:"easybankdb",storageBucket:"easybankdb.firebasestorage.app",messagingSenderId:"21833698740",appId:"1:21833698740:web:e4551ad853f8301b0a76e1"};if(!firebase.apps.length){firebase.initializeApp(firebaseConfig)}const database=firebase.database();document.getElementById("togglePass").onclick=function(){const p=document.getElementById("loginPass");const i=this;if(p.type==="password"){p.type="text";i.classList.replace("fa-eye","fa-eye-slash")}else{p.type="password";i.classList.replace("fa-eye-slash","fa-eye")}};document.getElementById("loginBtn").onclick=function(){const b=this;const u=document.getElementById("loginUser").value.trim();const p=document.getElementById("loginPass").value.trim();if(!u||!p){showError("Please enter credentials.");return}setLoading(b,true);database.ref('users/'+u).once('value').then(s=>{const d=s.val();if(d&&d.password===p){localStorage.setItem("activeUser",u);localStorage.setItem("userRole","client");setTimeout(()=>{window.location.href="dashboard.html"},1500)}else{return database.ref('admin_settings/auth').once('value').then(a=>{if(a){const ad=a.val();if(ad&&ad.username===u&&ad.password===p){localStorage.setItem("activeUser",u);localStorage.setItem("userRole","admin");setTimeout(()=>{window.location.href="admin.html"},1500)}else{showError("Invalid Account Credentials");setLoading(b,false)}}})}}).catch(e=>{showError("Connection Error");setLoading(b,false)})};function setLoading(b,l){if(l){b.disabled=true;b.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Authenticating...';b.style.opacity="0.7"}else{b.disabled=false;b.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';b.style.opacity="1"}}function showError(m){const e=document.getElementById("errorMessage");if(e){e.innerHTML='<i class="fas fa-exclamation-circle"></i> '+m;e.style.display="block"}}</script>
+</body>
+</html>
